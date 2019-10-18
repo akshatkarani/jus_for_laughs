@@ -1,6 +1,6 @@
 import os
 import tweepy
-
+from typing import List
 
 def _init_twitter():
     auth = tweepy.OAuthHandler(os.environ['TWEET_API_KEY'],
@@ -19,5 +19,25 @@ def post_tweet(tweet: str):
     try:
         api.update_status(tweet)
         print('Successfully Tweeted: ' + tweet)
+    except tweepy.error.TweepError as e:
+        print(e)
+
+def post_thread(tweets: List[str]):
+    """
+    Posts a thread of tweets, received as a list
+    of strings that are less than 280 characters each.
+    """
+
+    api = _get_api()
+    try:
+        last_status_id = None
+        for tweet in tweets:
+            if last_status_id is not None:
+                status = api.update_status(tweet)
+                print('Successfully Tweeted: ' + tweet)
+            else:
+                status = api.update_status(tweet, last_status_id)
+                print('Successfully Tweeted: ' + tweet + " as a reply to tweet with id " + str(last_status_id))
+            last_status_id = status.id
     except tweepy.error.TweepError as e:
         print(e)
