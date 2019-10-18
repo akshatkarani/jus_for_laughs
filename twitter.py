@@ -34,10 +34,10 @@ def post_thread(tweets: List[str]):
         for tweet in tweets:
             if last_status_id is not None:
                 status = api.update_status(tweet)
-                print('Successfully Tweeted: ' + tweet)
+                print('Successfully Tweeted: ' + tweet + ' with id ' + str(status.id))
             else:
                 status = api.update_status(tweet, last_status_id)
-                print('Successfully Tweeted: ' + tweet + " as a reply to tweet with id " + str(last_status_id))
+                print('Successfully Tweeted: ' + tweet + ' with id ' + str(status.id) + " as a reply to tweet with id " + str(last_status_id))
             last_status_id = status.id
     except tweepy.error.TweepError as e:
         print(e)
