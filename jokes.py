@@ -11,17 +11,23 @@ def post():
         # Threaded (multiple-tweet) joke
         else:
             tweets = []
-            tweet_words = tweet.split()
-            t = ""
-            for word in tweet_words:
-                # we check against 279 because we add a space
-                if (len(t) + len(word)) <= 279:
-                    t += word + " "
+            tweet_sentences = tweet.split(".")
+            for sentence in tweet_sentences:
+                # we check against the 280 character limit
+                if (len(sentence)) <= 280:
+                    tweets.append(sentence)
                 else:
-                    tweets.append(t)
-                    t = word
+                    # in case the whole sentence is greater than 280 words
+                    # we split it progressively
+                    words = tweet.split()
+                    t = ""
+                    for word in words:
+                        if (len(t) + len(word)) <= 279:
+                            t += word + " "
+                        else:
+                            tweets.append(t)
+                            t = word
             post_thread(tweets)
-
 
 if __name__ == '__main__':
     while True:
