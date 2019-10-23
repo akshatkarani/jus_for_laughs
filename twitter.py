@@ -13,7 +13,6 @@ def _init_twitter():
 def _get_api():
     return tweepy.API(_init_twitter())
 
-
 def post_tweet(tweet: str):
     api = _get_api()
     try:
@@ -34,10 +33,14 @@ def post_thread(tweets: List[str]):
         for tweet in tweets:
             if last_status_id is not None:
                 status = api.update_status(tweet)
-                print('Successfully Tweeted: ' + tweet + ' with id ' + str(status.id))
+                success_msg = 'Tweeted: %s (%s)'
+                info = (tweet, str(status.id))
+                print(success_msg % info)
             else:
                 status = api.update_status(tweet, last_status_id)
-                print('Successfully Tweeted: ' + tweet + ' with id ' + str(status.id) + " as a reply to tweet with id " + str(last_status_id))
+                success_msg = 'Tweeted: %s (%s) as a reply to tweet %s'
+                info = (tweet, str(status.id), str(last_status_id))
+                print(success_msg % info)
             last_status_id = status.id
     except tweepy.error.TweepError as e:
         print(e)
