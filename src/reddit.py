@@ -26,20 +26,21 @@ def allowed(submission):
         return False
     return True
 
-def get_subreddits(reddit):
+
+def _get_subreddits(reddit):
     with open("subreddits.csv", "r") as file:
         csv_reader = csv.DictReader(file)
-        
         for row in csv_reader:
             if int(row["enabled"]) == 1:
                 subreddit = reddit.subreddit(row["subreddit"])
                 yield subreddit
 
+
 def get_newest():
     reddit = _init_reddit()
     if isinstance(reddit, praw.Reddit):
-        subreddits = get_subreddits(reddit)
-        
+        subreddits = _get_subreddits(reddit)
+
         for subreddit in subreddits:
             for submission in subreddit.hot(limit=5):
                 if allowed(submission):
@@ -48,4 +49,3 @@ def get_newest():
     else:
         subprocess.call('source "jokes-env"')
         get_newest()
-

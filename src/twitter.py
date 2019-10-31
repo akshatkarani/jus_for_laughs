@@ -1,6 +1,7 @@
 import os
 import tweepy
 
+
 def _init_twitter():
     auth = tweepy.OAuthHandler(os.environ['TWEET_API_KEY'],
                                os.environ['TWEET_API_SECRET'])
@@ -12,6 +13,7 @@ def _init_twitter():
 def _get_api():
     return tweepy.API(_init_twitter())
 
+
 def post_tweet(tweet: str):
     api = _get_api()
     try:
@@ -19,6 +21,7 @@ def post_tweet(tweet: str):
         print('Successfully Tweeted: ' + tweet)
     except tweepy.error.TweepError as e:
         print(e)
+
 
 def post_thread(tweets: list):
     """
