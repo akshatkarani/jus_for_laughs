@@ -1,7 +1,10 @@
 import os
-import csv
 import praw
-import subprocess
+
+
+# SUBREDDITS is a dictionary with key as subreddit name and value
+# which indicates status. If status is 0 then it won't be used.
+SUBREDDITS = {'jokes': 1}
 
 
 def _init_reddit():
@@ -12,40 +15,49 @@ def _init_reddit():
                            username=os.environ['REDDIT_USERNAME'],
                            password=os.environ['REDDIT_PASSWORD'])
     except KeyError:
-        print('Try: "source jokes-env"')
+        print('Error occurred')
 
 
-def _get_joke(submission):
-    return submission.title + '\n\n' + submission.selftext
+def _get_post(submission):
+    """
+    Given a submission returns the post.
+    In some posts title is re-written in selftext, this takes care of that.
+    """
+    post = submission.selftext
+    if submission.title.lower() not in post.lower():
+        post = submission.title + '\n\n' + post
+    return submission.id, post
 
 
 def allowed(submission):
+    """
+    Return False if a submission is not allowed otherwise returns True
+    Needed because some subreddits have pinned posts.
+    """
+    # Remove the pinned post from r/jokes
     if submission.title == r'r/jokes has a discord and you need to join!':
-        return False
-    if len(_get_joke(submission)) > 240:
         return False
     return True
 
 
 def _get_subreddits(reddit):
-    with open("subreddits.csv", "r") as file:
-        csv_reader = csv.DictReader(file)
-        for row in csv_reader:
-            if int(row["enabled"]) == 1:
-                subreddit = reddit.subreddit(row["subreddit"])
-                yield subreddit
+    """
+    Returns all the subreddits to use from SUBREDDITS
+    """
+    for sub, status in SUBREDDITS.items():
+        if status == 1:
+            yield reddit.subreddit(sub)
 
 
 def get_newest():
+    """
+    Returns posts from subreddits
+    """
     reddit = _init_reddit()
     if isinstance(reddit, praw.Reddit):
         subreddits = _get_subreddits(reddit)
 
         for subreddit in subreddits:
-            for submission in subreddit.hot(limit=5):
+            for submission in subreddit.hot(limit=50):
                 if allowed(submission):
-                    yield _get_joke(submission)
-
-    else:
-        subprocess.call('source "jokes-env"')
-        get_newest()
+                    yield _get_post(submission)
