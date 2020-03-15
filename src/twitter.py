@@ -1,21 +1,13 @@
-import os
 import tweepy
-import logging
-
-
-logging.basicConfig(filename='logfile',
-                    format='%(asctime)s %(message)s', 
-                    filemode='w')
-
-logger=logging.getLogger()
-logger.setLevel(logging.DEBUG)
+import keys
+from logger import logger
 
 
 def _init_twitter():
-    auth = tweepy.OAuthHandler(os.environ['TWEET_API_KEY'],
-                               os.environ['TWEET_API_SECRET'])
-    auth.set_access_token(os.environ['TWEET_ACCESS_KEY'],
-                          os.environ['TWEET_ACCESS_SECRET'])
+    auth = tweepy.OAuthHandler(keys.TWEET_API_KEY,
+                               keys.TWEET_API_SECRET)
+    auth.set_access_token(keys.TWEET_ACCESS_KEY,
+                          keys.TWEET_ACCESS_SECRET)
     return auth
 
 
@@ -77,8 +69,9 @@ def post(submission_id, tweet):
     if len(tweet) <= 280:
         post_tweet(tweet)
     else:
-        tweets = split_tweet(tweet)
-        post_thread(tweets)
+        pass
+        # tweets = split_tweet(tweet)
+        # post_thread(tweets)
 
 
 if __name__ == '__main__':

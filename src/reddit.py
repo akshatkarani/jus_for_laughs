@@ -1,5 +1,6 @@
-import os
 import praw
+import keys
+from logger import logger
 
 
 # SUBREDDITS is a dictionary with key as subreddit name and value
@@ -10,11 +11,12 @@ SUBREDDITS = {'jokes': 1}
 def _init_reddit():
     try:
         return praw.Reddit(user_agent='jokes by akshatkarani',
-                           client_id=os.environ['REDDIT_KEY'],
-                           client_secret=os.environ['REDDIT_SECRET'],
-                           username=os.environ['REDDIT_USERNAME'],
-                           password=os.environ['REDDIT_PASSWORD'])
+                           client_id=keys.REDDIT_KEY,
+                           client_secret=keys.REDDIT_SECRET,
+                           username=keys.REDDIT_USERNAME,
+                           password=keys.REDDIT_PASSWORD)
     except KeyError:
+        logger.error('Error occurred')
         print('Error occurred')
 
 
@@ -58,6 +60,6 @@ def get_newest():
         subreddits = _get_subreddits(reddit)
 
         for subreddit in subreddits:
-            for submission in subreddit.hot(limit=50):
+            for submission in subreddit.hot(limit=5):
                 if allowed(submission):
                     yield _get_post(submission)
