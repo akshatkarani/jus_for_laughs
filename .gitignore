@@ -1,7 +1,7 @@
 src/__pycache__
 jokes-env
 logfile
-src/test.py
+src/test*.py
 run.sh
 src/keys.py
 src/logger.py
