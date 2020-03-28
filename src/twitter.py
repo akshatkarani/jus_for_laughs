@@ -69,12 +69,5 @@ def post(submission_id, tweet):
     if len(tweet) <= 280:
         post_tweet(tweet)
     else:
-        pass
-        # tweets = split_tweet(tweet)
-        # post_thread(tweets)
-
-
-if __name__ == '__main__':
-    tweets = ['test4', 'test2', 'test3', 'test1']
-    for tweet in tweets:
-        post_tweet(tweet)
+        tweets = split_tweet(tweet)
+        post_thread(tweets)
