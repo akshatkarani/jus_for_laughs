@@ -7,3 +7,5 @@ To access Twitter API I have used Tweepy and to access Reddit API I have used PR
 The bot runs every two hours automatically, for this just set up a cron job.
 
 Run the bot using `run.sh`.
+
+You can contact me on [gitter](https://gitter.im/akshatkarani).
