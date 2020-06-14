@@ -60,6 +60,6 @@ def get_newest():
         subreddits = _get_subreddits(reddit)
 
         for subreddit in subreddits:
-            for submission in subreddit.hot(limit=5):
+            for submission in subreddit.hot(limit=20):
                 if allowed(submission):
                     yield _get_post(submission)
