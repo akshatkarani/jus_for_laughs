@@ -31,17 +31,6 @@ def _get_post(submission):
     return submission.id, post
 
 
-def allowed(submission):
-    """
-    Return False if a submission is not allowed otherwise returns True
-    Needed because some subreddits have pinned posts.
-    """
-    # Remove the pinned post from r/jokes
-    if submission.title == r'r/jokes has a discord and you need to join!':
-        return False
-    return True
-
-
 def _get_subreddits(reddit):
     """
     Returns all the subreddits to use from SUBREDDITS
@@ -61,5 +50,5 @@ def get_newest():
 
         for subreddit in subreddits:
             for submission in subreddit.hot(limit=5):
-                if allowed(submission):
+                if not submission.stickied:
                     yield _get_post(submission)
