@@ -1,3 +1,4 @@
+import re
 import tweepy
 import keys
 from logger import logger
@@ -38,30 +39,26 @@ def post_thread(tweets: list):
         last_status_id = post_tweet(tweet, last_status_id)
 
 
-# Needs some work and some tests
+def check(tweets):
+    for tweet in tweets:
+        if len(tweet) > 280:
+            return False
+        return True
+
 def split_tweet(tweet):
     """
     Split a tweet into multiple tweets if it exceeds the character limit
     """
-    tweets = []
-    # Try to split at period
-    tweet_sentences = tweet.split(".")
-    for sentence in tweet_sentences:
-        # we check against the 280 character limit
-        if (len(sentence)) <= 280:
-            tweets.append(sentence)
-        else:
-            # in case the whole sentence is greater than 280 words
-            # we split it progressively
-            words = tweet.split()
-            t = ""
-            for word in words:
-                if (len(t) + len(word)) <= 279:
-                    t += word + " "
-                else:
-                    tweets.append(t)
-                    t = word
-
+    # Try spliting based on new line
+    tweets = tweet.split('\n')
+    if check(tweets):
+        return tweets
+    
+    # Try spliting based on period
+    tweets = re.split('[\n.]')
+    if check(tweets):
+        return tweets
+    return False
 
 def post(submission_id, tweet):
     # Check if tweet exceeds the character limit of 280
@@ -70,4 +67,6 @@ def post(submission_id, tweet):
         post_tweet(tweet)
     else:
         tweets = split_tweet(tweet)
+        if not tweets:
+            return
         post_thread(tweets)
