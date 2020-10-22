@@ -43,7 +43,7 @@ def check(tweets):
     for tweet in tweets:
         if len(tweet) > 280:
             return False
-        return True
+    return True
 
 def split_tweet(tweet):
     """
@@ -51,13 +51,21 @@ def split_tweet(tweet):
     """
     # Try spliting based on new line
     tweets = tweet.split('\n')
+    if not check(tweets):
+        # Try spliting based on period
+        tweets = re.split('[\n.]', tweet)
+        tweets = [t + '. ' for t in tweets if t]
     if check(tweets):
-        return tweets
-    
-    # Try spliting based on period
-    tweets = re.split('[\n.]')
-    if check(tweets):
-        return tweets
+        tweets = [t for t in tweets if t]
+        new = []
+        curr_tweet = ''
+        for i, tweet in enumerate(tweets):
+            if len(tweet) + len(curr_tweet) > 280:
+                new.append(curr_tweet)
+                curr_tweet = tweet
+            else:
+                curr_tweet += tweet
+        return new + [curr_tweet]
     return False
 
 def post(submission_id, tweet):
